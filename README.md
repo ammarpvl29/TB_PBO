@@ -53,4 +53,4 @@ Asisten dosen: bang Omar
 ![Screenshot (3192)](https://github.com/ammarpvl29/TB_PBO/assets/123556107/8061565e-12b5-4f65-893d-b19551ce43f7)
 
 ### UML Class Diagram
- 
+ ![UML_PBO](https://github.com/ammarpvl29/TB_PBO/assets/123556107/60749f02-99e9-4071-88a9-e04a582eec01)
