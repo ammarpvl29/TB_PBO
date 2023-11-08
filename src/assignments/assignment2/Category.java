@@ -27,3 +27,18 @@ public class Category {
         this.point = point;
     }
 }
+
+/*
+ * +-----------------+
+ * | Category |
+ * +-----------------+
+ * | - name: String
+ * | - point: int
+ * +-----------------+
+ * | + getName(): String
+ * | + setName(String): void
+ * | + getPoint(): int
+ * | + setPoint(int): void
+ * | + toString(): String
+ * +-----------------+
+ */

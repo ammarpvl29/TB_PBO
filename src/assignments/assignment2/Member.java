@@ -157,3 +157,43 @@ public class Member {
         this.bookLoans = bookLoans;
     }
 }
+
+/*
+ * +-----------------+
+ * | Member |
+ * +-----------------+
+ * | - id: String
+ * | - name: String
+ * | - dateOfBirth: String
+ * | - studyProgram: String
+ * | - angkatan: String
+ * | - fine: long
+ * | - point: int
+ * | - bookLoans: BookLoan[]
+ * | - i: int
+ * +-----------------+
+ * | + Member(): Constructor
+ * | + checkBookLoan(BookLoan[], String, String): int
+ * | + pinjam(Book, String): void
+ * | + kembali(Book, String): void
+ * | + detail(): void
+ * | + bayarDenda(long): void
+ * | + getId(): String
+ * | + setId(String): void
+ * | + getName(): String
+ * | + setName(String): void
+ * | + getDateOfBirth(): String
+ * | + setDateOfBirth(String): void
+ * | + getStudyProgram(): String
+ * | + setStudyProgram(String): void
+ * | + getAngkatan(): String
+ * | + setAngkatan(String): void
+ * | + getFine(): long
+ * | + setFine(long): void
+ * | + getPoint(): int
+ * | + setPoint(int): void
+ * | + getBookLoans(): BookLoan[]
+ * | + setBookLoans(BookLoan[]): void
+ * | + toString(): String
+ * +-----------------+
+ */

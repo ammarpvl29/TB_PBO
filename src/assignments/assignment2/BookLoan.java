@@ -58,3 +58,30 @@ public class BookLoan {
         this.status = status;
     }
 }
+
+/*
+ * +-----------------+
+ * | BookLoan |
+ * +-----------------+
+ * | - DENDA_PER_HARI: long (static)
+ * | - member: Member
+ * | - book: Book
+ * | - loanDate: String
+ * | - returnDate: String
+ * | - fine: long
+ * | - status: boolean
+ * +-----------------+
+ * | + getMember(): Member
+ * | + setMember(Member): void
+ * | + getBook(): Book
+ * | + setBook(Book): void
+ * | + getLoanDate(): String
+ * | + setLoanDate(String): void
+ * | + getReturnDate(): String
+ * | + setReturnDate(String): void
+ * | + getFine(): long
+ * | + setFine(long): void
+ * | + isStatus(): boolean
+ * | + setStatus(boolean): void
+ * +-----------------+
+ */
