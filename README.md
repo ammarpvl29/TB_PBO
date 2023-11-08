@@ -1,4 +1,4 @@
-# TB_PBO
+# TB_PBO (Alpha version aka no GUI)
 Tugas Besar PBO 2023 kelompok femboy lovers
 Anggota:
 1. Ammar Pavel ZS
