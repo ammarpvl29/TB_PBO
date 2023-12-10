@@ -1,4 +1,5 @@
-package assignments.assignment2;
+package com.tugasbesaroop;
+
 // Dah Komplit
 
 public class Book {
@@ -53,27 +54,3 @@ public class Book {
         this.category = category;
     }
 }
-
-/*
- * +-----------------+
- * | Book |
- * +-----------------+
- * | - title: String
- * | - author: String
- * | - publisher: String
- * | - stok: int
- * | - category: Category
- * +-----------------+
- * | + getTitle(): String
- * | + setTitle(String): void
- * | + getAuthor(): String
- * | + setAuthor(String): void
- * | + getPublisher(): String
- * | + setPublisher(String): void
- * | + getStok(): int
- * | + setStok(int): void
- * | + getCategory(): Category
- * | + setCategory(Category): void
- * | + toString(): String
- * +-----------------+
- */

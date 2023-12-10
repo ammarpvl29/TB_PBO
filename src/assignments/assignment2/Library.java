@@ -1,10 +1,12 @@
-package assignments.assignment2;
+package com.tugasbesaroop;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
-import Member.Member;
-import Cateogry.Category;
-import Book.Book;
+import java.util.Date;
+import com.tugasbesaroop.*;
 
 public class Library {
 
@@ -38,7 +40,7 @@ public class Library {
 
     private int checkBook(String judul, String penulis) {
         for (int i = 0; i < books.length; i++) {
-            if (books[i].getTitle().toLowerCase().equals(judul.toLowerCase()) &&
+            if (books[i] != null && books[i].getTitle().toLowerCase().equals(judul.toLowerCase()) &&
                     books[i].getAuthor().toLowerCase().equals(penulis.toLowerCase())) {
                 return i;
             }
@@ -48,8 +50,9 @@ public class Library {
 
     private BookLoan checkBookLoan(BookLoan[] bookLoans, String judul, String penulis) {
         for (int i = 0; i < bookLoans.length; i++) {
-            if (bookLoans[i].getBook().getTitle().toLowerCase().equals(judul.toLowerCase()) &&
-                    bookLoans[i].getBook().getAuthor().toLowerCase().equals(penulis.toLowerCase())) {
+            if (bookLoans[i] != null && bookLoans[i].getBook().getTitle().toLowerCase().equals(judul.toLowerCase()) &&
+                    bookLoans[i].getBook().getAuthor().toLowerCase().equals(penulis.toLowerCase())
+                    && bookLoans[i].isOnLoan()) {
                 return bookLoans[i];
             }
         }
@@ -57,6 +60,10 @@ public class Library {
     }
 
     private void addMember() {
+        if (i >= members.length) {
+            System.out.println("Maximum number of members reached. Cannot add more members.");
+            return;
+        }
         IdGenerator.buildMapCharToValue();
         Scanner scanner = new Scanner(System.in);
         members[i] = new Member();
@@ -93,73 +100,75 @@ public class Library {
         String nama = scanner.nextLine();
         System.out.print("Point : ");
         int point = scanner.nextInt();
-        if (j == 0) {
+        if (j == 0 || checkCategory(nama) == null) {
+            categories[j] = new Category();
             categories[j].setName(nama);
             categories[j].setPoint(point);
-            System.out.println("Kategori " + categories[j].getName() + " dengan " + categories[i].getPoint()
+            System.out.println("Kategori " + categories[j].getName() + " dengan " + categories[j].getPoint()
                     + " point berhasil ditambahkan");
             j++;
         } else {
-            if (checkCategory(nama) == null) {
-                categories[j].setName(nama);
-                categories[j].setPoint(point);
-                System.out.println("Kategori " + categories[j].getName() + " dengan " + categories[i].getPoint()
-                        + " point berhasil ditambahkan");
-                j++;
-            } else {
-                System.out.println("Kategori " + nama + " sudah pernah ditambahkan");
-            }
+            System.out.println("Kategori " + nama + " sudah pernah ditambahkan");
         }
     }
 
     private void addBook() {
-        Scanner scanner = new Scanner(System.in);
-        books[k] = new Book();
-        System.out.println("---------- Tambah Buku ----------");
-        System.out.print("Judul : ");
-        String judul = scanner.nextLine();
-        System.out.print("Penulis : ");
-        String penulis = scanner.nextLine();
-        System.out.print("Penerbit : ");
-        String penerbit = scanner.nextLine();
-        System.out.print("Kategori : ");
-        String kategori = scanner.nextLine();
-        System.out.print("Stok : ");
-        int stok = scanner.nextInt();
-        if (k == 0) {
-            if (stok > 0) {
-                books[k].setCategory(checkCategory(kategori));
-                books[k].setTitle(judul);
-                books[k].setAuthor(penulis);
-                books[k].setPublisher(penerbit);
-                books[k].setStok(stok);
-                System.out.println(
-                        "Buku " + books[k].getTitle() + " oleh " + books[k].getAuthor() + " berhasil ditambahkan");
-                k++;
-            } else {
-                System.out.println("Stok harus lebih dari 0");
-            }
-        } else {
-            if (checkBook(judul, penulis) == -1) {
-                if (checkCategory(kategori) != null) {
-                    if (stok > 0) {
-                        books[k].setCategory(checkCategory(kategori));
-                        books[k].setTitle(judul);
-                        books[k].setAuthor(penulis);
-                        books[k].setPublisher(penerbit);
-                        books[k].setStok(stok);
-                        System.out.println("Buku " + books[k].getTitle() + " oleh " + books[k].getAuthor()
-                                + " berhasil ditambahkan");
-                        k++;
-                    } else {
-                        System.out.println("Stok harus lebih dari 0");
-                    }
+        if (k >= books.length) {
+            System.out.println("Tidak bisa menambah buku (Perpustakaan sudah penuh).");
+            return;
+        }
+        try {
+            Scanner scanner = new Scanner(System.in);
+            books[k] = new Book();
+            System.out.println("---------- Tambah Buku ----------");
+            System.out.print("Judul : ");
+            String judul = scanner.nextLine();
+            System.out.print("Penulis : ");
+            String penulis = scanner.nextLine();
+            System.out.print("Penerbit : ");
+            String penerbit = scanner.nextLine();
+            System.out.print("Kategori : ");
+            String kategori = scanner.nextLine();
+            System.out.print("Stok : ");
+            int stok = scanner.nextInt();
+            if (k == 0) {
+                if (stok > 0) {
+                    books[k].setCategory(checkCategory(kategori));
+                    books[k].setTitle(judul);
+                    books[k].setAuthor(penulis);
+                    books[k].setPublisher(penerbit);
+                    books[k].setStok(stok);
+                    System.out.println(
+                            "Buku " + books[k].getTitle() + " oleh " + books[k].getAuthor() + " berhasil ditambahkan");
+                    k++;
                 } else {
-                    System.out.println("Kategori " + kategori + " tidak ditemukan");
+                    System.out.println("Stok harus lebih dari 0");
                 }
             } else {
-                System.out.println("Buku " + judul + " oleh " + penulis + " sudah pernah ditambahkan");
+                if (checkBook(judul, penulis) == -1) {
+                    if (checkCategory(kategori) != null) {
+                        if (stok > 0) {
+                            books[k].setCategory(checkCategory(kategori));
+                            books[k].setTitle(judul);
+                            books[k].setAuthor(penulis);
+                            books[k].setPublisher(penerbit);
+                            books[k].setStok(stok);
+                            System.out.println("Buku " + books[k].getTitle() + " oleh " + books[k].getAuthor()
+                                    + " berhasil ditambahkan");
+                            k++;
+                        } else {
+                            System.out.println("Stok harus lebih dari 0");
+                        }
+                    } else {
+                        System.out.println("Kategori " + kategori + " tidak ditemukan");
+                    }
+                } else {
+                    System.out.println("Buku " + judul + " oleh " + penulis + " sudah pernah ditambahkan");
+                }
             }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter an integer for the stock.");
+            return;
         }
     }
 
@@ -170,39 +179,45 @@ public class Library {
         String id = scanner.nextLine();
         System.out.println("Judul Buku: ");
         String judul = scanner.nextLine();
-        System.out.println("ID Anggota: ");
+        System.out.println("Penulis: ");
         String penulis = scanner.nextLine();
         System.out.println("Tangal Peminjaman: ");
         String tanggalPeminjaman = scanner.nextLine();
-        int indeks = checkMember(id);
-        if (indeks != -1) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date date = dateFormat.parse(tanggalPeminjaman);
+            int indeks = checkMember(id);
             int indeksBuku = checkBook(judul, penulis);
-            Book book = books[indeksBuku];
-            if (book != null) {
-                int stok = book.getStok();
-                if (stok >= 1) {
-                    if (members[indeks].getBookLoans().length < 3) {
-                        if (members[indeks].getFine() < 5000) {
-                            if (checkBookLoan(members[indeks].getBookLoans(), judul, penulis) == null) {
-                                members[indeks].pinjam(book, tanggalPeminjaman);
-                                books[indeksBuku].setStok(stok - 1);
+            if (indeks != -1) {
+                Book book = books[indeksBuku];
+                if (book != null) {
+                    int stok = book.getStok();
+                    if (stok >= 1) {
+                        if (members[indeks].getNumLoans() < 3) {
+                            if (members[indeks].getFine() < 5000) {
+                                if (checkBookLoan(members[indeks].getBookLoans(), judul, penulis) == null) {
+                                    members[indeks].pinjam(book, date);
+                                    books[indeksBuku].setStok(stok - 1);
+                                } else {
+                                    System.out.println("Buku " + judul + " oleh " + penulis + " sedang dipinjam");
+                                }
                             } else {
-                                System.out.println("Buku " + judul + " oleh " + penulis + " sedang dipinjam");
+                                System.out.println("Denda lebih dari Rp 5000");
                             }
                         } else {
-                            System.out.println("Denda lebih dari Rp 5000");
+                            System.out.println("Jumlah buku yang sedang dipinjam sudah mencapai batas maksimal");
                         }
                     } else {
-                        System.out.println("Jumlah buku yang sedang dipinjam sudah mencapai batas maksimal");
+                        System.out.println("Buku " + judul + " oleh " + penulis + " tidak tersedia");
                     }
                 } else {
-                    System.out.println("Buku " + judul + " oleh " + penulis + " tidak tersedia");
+                    System.out.println("Buku " + judul + " oleh " + penulis + " tidak ditemukan");
                 }
             } else {
-                System.out.println("Buku " + judul + " oleh " + penulis + " tidak ditemukan");
+                System.out.println("Anggota dengan ID " + id + " tidak ditemukan");
             }
-        } else {
-            System.out.println("Anggota dengan ID " + id + " tidak ditemukan");
+        } catch (ParseException e) {
+            System.out.println("Invalid penanggalan. Enter dengan format dd/MM/yyyy.");
         }
     }
 
@@ -213,40 +228,46 @@ public class Library {
         String id = scanner.nextLine();
         System.out.println("Judul Buku: ");
         String judul = scanner.nextLine();
-        System.out.println("ID Anggota: ");
+        System.out.println("Penulis: ");
         String penulis = scanner.nextLine();
         System.out.println("Tangal Pengembalian: ");
         String tanggalPengembalian = scanner.nextLine();
-        int indeks = checkMember(id);
-        if (indeks != -1) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date date = dateFormat.parse(tanggalPengembalian);
+            int indeks = checkMember(id);
             int indeksBuku = checkBook(judul, penulis);
-            Book book = books[indeksBuku];
-            if (book != null) {
-                int stok = book.getStok();
-                if (stok >= 1) {
-                    if (members[indeks].getBookLoans().length <= 3) {
-                        if (members[indeks].getFine() < 5000) {
-                            BookLoan bookLoan = checkBookLoan(members[indeks].getBookLoans(), judul, penulis);
-                            if (bookLoan != null) {
-                                members[indeks].kembali(book, tanggalPengembalian);
-                                books[indeksBuku].setStok(stok + 1);
+            if (indeks != -1) {
+                Book book = books[indeksBuku];
+                if (book != null) {
+                    int stok = book.getStok();
+                    if (stok >= 1) {
+                        if (members[indeks].getBookLoans().length <= 3) {
+                            if (members[indeks].getFine() < 5000) {
+                                BookLoan bookLoan = checkBookLoan(members[indeks].getBookLoans(), judul, penulis);
+                                if (bookLoan != null) {
+                                    members[indeks].kembali(book, date);
+                                    books[indeksBuku].setStok(stok + 1);
+                                } else {
+                                    System.out.println("Buku " + judul + " oleh " + penulis + " tidak sedang dipinjam");
+                                }
                             } else {
-                                System.out.println("Buku " + judul + " oleh " + penulis + " tidak sedang dipinjam");
+                                System.out.println("Denda lebih dari Rp 5000");
                             }
                         } else {
-                            System.out.println("Denda lebih dari Rp 5000");
+                            System.out.println("Jumlah buku yang sedang dipinjam sudah mencapai batas maksimal");
                         }
                     } else {
-                        System.out.println("Jumlah buku yang sedang dipinjam sudah mencapai batas maksimal");
+                        System.out.println("Buku " + judul + " oleh " + penulis + " tidak tersedia");
                     }
                 } else {
-                    System.out.println("Buku " + judul + " oleh " + penulis + " tidak tersedia");
+                    System.out.println("Buku " + judul + " oleh " + penulis + " tidak ditemukan");
                 }
             } else {
-                System.out.println("Buku " + judul + " oleh " + penulis + " tidak ditemukan");
+                System.out.println("Anggota dengan ID " + id + " tidak ditemukan");
             }
-        } else {
-            System.out.println("Anggota dengan ID " + id + " tidak ditemukan");
+        } catch (ParseException e) {
+            System.out.println("Invalid penanggalan. Enter dengan format dd/MM/yyyy.");
         }
     }
 
@@ -283,11 +304,34 @@ public class Library {
         }
     }
 
+    public void printTopThreeMembers() {
+        Arrays.sort(members, (a, b) -> {
+            if (a == null) {
+                return 1;
+            } else if (b == null) {
+                return -1;
+            } else if (b.getPoint() != a.getPoint()) {
+                return b.getPoint() - a.getPoint();
+            } else {
+                return a.getName().compareTo(b.getName());
+            }
+        });
+
+        System.out.println("Top 3 Members:");
+        for (int i = 0; i < Math.min(3, members.length); i++) {
+            if (members[i] != null) {
+                System.out.println((i + 1) + ". " + members[i].getName() + " - " + members[i].getPoint() + " points");
+            }
+        }
+    }
+
     public static void main(String[] args) throws ParseException {
         Library program = new Library();
         program.members = new Member[100];
         program.categories = new Category[100];
         program.books = new Book[100];
+        LibraryDatabase db = new LibraryDatabase();
+        db.createNewTable();
         program.menu();
     }
 
@@ -324,7 +368,7 @@ public class Library {
             } else if (command == 7) {
                 detailAnggota();
             } else if (command == 8) {
-                // Belum selesai :(
+                printTopThreeMembers();
             } else if (command == 99) {
                 System.out.println("Terima kasih telah menggunakan SistakaNG!");
                 hasChosenExit = true;

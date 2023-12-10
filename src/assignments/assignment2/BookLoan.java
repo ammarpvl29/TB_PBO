@@ -1,14 +1,45 @@
-package assignments.assignment2;
+package com.tugasbesaroop;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 // TODO
 public class BookLoan {
     private static long DENDA_PER_HARI = 3000;
     private Member member;
     private Book book;
-    private String loanDate;
-    private String returnDate = "-";
+    private Date loanDate;
+    private Date returnDate;
     private long fine;
+    private boolean isOnLoan;
     private boolean status;
+
+
+    public BookLoan(Member member, Book book, Date loanDate) {
+        this.member = member;
+        this.book = book;
+        this.loanDate = loanDate;
+        this.isOnLoan = true;
+    }
+
+    public void returnBook(Date returnDate) {
+        this.returnDate = returnDate;
+        this.isOnLoan = false;
+        calculateFine();
+    }
+
+    private void calculateFine() {
+        long diff = returnDate.getTime() - loanDate.getTime();
+        long overdueDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) - 7;
+        if (overdueDays > 0) {
+            this.fine = overdueDays * DENDA_PER_HARI;
+        }
+    }
+
+    public boolean isOnLoan() {
+        return this.isOnLoan;
+    }
 
     public Member getMember() {
         return member;
@@ -26,20 +57,26 @@ public class BookLoan {
         this.book = book;
     }
 
-    public String getLoanDate() {
-        return loanDate;
-    }
-
-    public void setLoanDate(String loanDate) {
+    public void setLoanDate(Date loanDate) {
         this.loanDate = loanDate;
     }
 
-    public String getReturnDate() {
-        return returnDate;
+    public void setReturnDate(Date returnDate) {
+        this.returnDate = returnDate;
     }
 
-    public void setReturnDate(String returnDate) {
-        this.returnDate = returnDate;
+    public String getLoanDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return dateFormat.format(loanDate);
+    }
+
+    public String getReturnDate() {
+        if (returnDate != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            return dateFormat.format(returnDate);
+        } else {
+            return null;
+        }
     }
 
     public long getFine() {
@@ -58,30 +95,3 @@ public class BookLoan {
         this.status = status;
     }
 }
-
-/*
- * +-----------------+
- * | BookLoan |
- * +-----------------+
- * | - DENDA_PER_HARI: long (static)
- * | - member: Member
- * | - book: Book
- * | - loanDate: String
- * | - returnDate: String
- * | - fine: long
- * | - status: boolean
- * +-----------------+
- * | + getMember(): Member
- * | + setMember(Member): void
- * | + getBook(): Book
- * | + setBook(Book): void
- * | + getLoanDate(): String
- * | + setLoanDate(String): void
- * | + getReturnDate(): String
- * | + setReturnDate(String): void
- * | + getFine(): long
- * | + setFine(long): void
- * | + isStatus(): boolean
- * | + setStatus(boolean): void
- * +-----------------+
- */

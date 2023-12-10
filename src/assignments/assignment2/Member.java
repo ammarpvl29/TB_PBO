@@ -1,4 +1,4 @@
-package assignments.assignment2;
+package com.tugasbesaroop;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,6 +16,7 @@ public class Member {
     private int point;
     private BookLoan[] bookLoans;
     private int i = 0;
+    private int numLoans = 0;
 
     private int checkBookLoan(BookLoan[] bookLoans, String judul, String penulis) {
         for (int i = 0; i < bookLoans.length; i++) {
@@ -31,22 +32,19 @@ public class Member {
         bookLoans = new BookLoan[3];
     }
 
-    public void pinjam(Book book, String loanDate) {
-        bookLoans[i] = new BookLoan();
-        bookLoans[i].setBook(book);
-        bookLoans[i].setLoanDate(loanDate);
+    public void pinjam(Book book, Date loanDate) {
+        bookLoans[i] = new BookLoan(this, book, loanDate);
+        numLoans++;
     }
 
-    public void kembali(Book book, String returnDate) throws ParseException {
-        // TODO: method untuk melakukan pengembalian oleh member
+    public void kembali(Book book, Date returnDate) throws ParseException {
         int indeks = checkBookLoan(bookLoans, book.getTitle(), book.getAuthor());
         if (indeks != -1) {
             bookLoans[indeks].setReturnDate(returnDate);
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String loanDate = bookLoans[indeks].getLoanDate();
             Date loan = sdf.parse(loanDate);
-            Date retDate = sdf.parse(returnDate);
-            long diff = retDate.getTime() - loan.getTime();
+            long diff = returnDate.getTime() - loan.getTime();
             long durasi = diff / (24 * 60 * 60 * 1000);
             long denda = (durasi - 7) * 3000;
             bookLoans[indeks].setFine(denda);
@@ -63,16 +61,24 @@ public class Member {
         System.out.println("Total Point: " + point);
         System.out.println("Denda: " + fine);
         System.out.println("Riwayat Peminjaman Buku : ");
+
+        boolean hasBorrowed = false;
         for (int i = 0; i < bookLoans.length; i++) {
-            System.out.println("---------- " + i + 1 + " ----------");
-            System.out.println("Judul Buku : " + bookLoans[i].getBook().getTitle());
-            System.out.println("Penulis Buku : " + bookLoans[i].getBook().getAuthor());
-            System.out.println("Penerbit Buku : " + bookLoans[i].getBook().getPublisher());
-            System.out.println("Kategori : " + bookLoans[i].getBook().getCategory().getName());
-            System.out.println("Point : " + bookLoans[i].getBook().getCategory().getPoint());
-            System.out.println("Tanggal Peminjaman : " + bookLoans[i].getLoanDate());
-            System.out.println("Tanggal Pengembalian : " + bookLoans[i].getReturnDate());
-            System.out.println("Denda : Rp" + bookLoans[i].getFine());
+            if (bookLoans[i] != null) {
+                hasBorrowed = true;
+                System.out.println("---------- " + (i + 1) + " ----------");
+                System.out.println("Judul Buku : " + bookLoans[i].getBook().getTitle());
+                System.out.println("Penulis Buku : " + bookLoans[i].getBook().getAuthor());
+                System.out.println("Penerbit Buku : " + bookLoans[i].getBook().getPublisher());
+                System.out.println("Kategori : " + bookLoans[i].getBook().getCategory().getName());
+                System.out.println("Point : " + bookLoans[i].getBook().getCategory().getPoint());
+                System.out.println("Tanggal Peminjaman : " + bookLoans[i].getLoanDate());
+                System.out.println("Tanggal Pengembalian : " + bookLoans[i].getReturnDate());
+                System.out.println("Denda : Rp" + bookLoans[i].getFine());
+            }
+        }
+        if (!hasBorrowed) {
+            System.out.println("Belum meminjam buku");
         }
     }
 
@@ -156,44 +162,8 @@ public class Member {
     public void setBookLoans(BookLoan[] bookLoans) {
         this.bookLoans = bookLoans;
     }
-}
 
-/*
- * +-----------------+
- * | Member |
- * +-----------------+
- * | - id: String
- * | - name: String
- * | - dateOfBirth: String
- * | - studyProgram: String
- * | - angkatan: String
- * | - fine: long
- * | - point: int
- * | - bookLoans: BookLoan[]
- * | - i: int
- * +-----------------+
- * | + Member(): Constructor
- * | + checkBookLoan(BookLoan[], String, String): int
- * | + pinjam(Book, String): void
- * | + kembali(Book, String): void
- * | + detail(): void
- * | + bayarDenda(long): void
- * | + getId(): String
- * | + setId(String): void
- * | + getName(): String
- * | + setName(String): void
- * | + getDateOfBirth(): String
- * | + setDateOfBirth(String): void
- * | + getStudyProgram(): String
- * | + setStudyProgram(String): void
- * | + getAngkatan(): String
- * | + setAngkatan(String): void
- * | + getFine(): long
- * | + setFine(long): void
- * | + getPoint(): int
- * | + setPoint(int): void
- * | + getBookLoans(): BookLoan[]
- * | + setBookLoans(BookLoan[]): void
- * | + toString(): String
- * +-----------------+
- */
+    public int getNumLoans() {
+        return numLoans;
+    }
+}
