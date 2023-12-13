@@ -33,6 +33,11 @@ public class LibraryDatabase {
     }
 
     public void createNewTables() {
+        String dropSqlMember = "DROP TABLE IF EXISTS Member";
+        String dropSqlBook = "DROP TABLE IF EXISTS Book";
+        String dropSqlBookLoan = "DROP TABLE IF EXISTS BookLoan";
+        String dropSqlCategory = "DROP TABLE IF EXISTS Category";
+
         // SQL statement for creating new tables
         String sqlMember = "CREATE TABLE IF NOT EXISTS Member (\n"
                 + " id text PRIMARY KEY,\n"
@@ -44,6 +49,7 @@ public class LibraryDatabase {
         String sqlBook = "CREATE TABLE IF NOT EXISTS Book (\n"
                 + " title text PRIMARY KEY,\n"
                 + " author text NOT NULL,\n"
+                + " publisher text NOT NULL,\n"
                 + " category text NOT NULL\n"
                 + ");";
 
@@ -64,6 +70,10 @@ public class LibraryDatabase {
 
         try (Connection conn = this.connect();
                 Statement stmt = conn.createStatement()) {
+            stmt.execute(dropSqlMember);
+            stmt.execute(dropSqlBook);
+            stmt.execute(dropSqlBookLoan);
+            stmt.execute(dropSqlCategory);
             // create new tables
             stmt.execute(sqlMember);
             stmt.execute(sqlBook);

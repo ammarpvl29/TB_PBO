@@ -138,12 +138,9 @@ public class BookLoan {
         ResultSet rs = pstmt.executeQuery();
 
         if (rs.next()) {
-            // You'll need to retrieve the Member and Book objects associated with this
-            // BookLoan
-            // This could be done with additional SELECT statements
-            // For simplicity, I'm leaving these as null
-            Member member = null;
-            Book book = null;
+            // Retrieve the Member and Book objects associated with this BookLoan
+            Member member = Member.selectFromDatabase(conn, memberId);
+            Book book = Book.selectFromDatabase(conn, bookTitle);
 
             // Convert the loan and return dates from String to Date
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");

@@ -2,7 +2,6 @@ package com.tugasbesaroop;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -23,6 +22,10 @@ public class Library {
     private Category[] categories;
     int i = 0, j = 0, k = 0;
 
+    public Library() {
+        libraryDatabase.createNewTables();
+    }
+
     private int checkMember(String id) {
         for (int i = 0; i < members.length; i++) {
             if (members[i].getId().equals(id)) {
@@ -33,7 +36,7 @@ public class Library {
     }
 
     private Category checkCategory(String nama) {
-        for (int i = 0; i < categories.length; i++) {
+        for (int i = 0; i < j; i++) {
             if (categories[i].getName().toLowerCase().equals(nama.toLowerCase())) {
                 return categories[i];
             }
@@ -105,19 +108,24 @@ public class Library {
 
     private void addCategory() {
         Scanner scanner = new Scanner(System.in);
-        categories[j] = new Category();
         System.out.println("---------- Tambah Kategori ----------");
         System.out.print("Nama Kategori: ");
         String nama = scanner.nextLine();
         System.out.print("Point : ");
         int point = scanner.nextInt();
         if (j == 0 || checkCategory(nama) == null) {
-            categories[j] = new Category();
-            categories[j].setName(nama);
-            categories[j].setPoint(point);
-            System.out.println("Kategori " + categories[j].getName() + " dengan " + categories[j].getPoint()
-                    + " point berhasil ditambahkan");
-            j++;
+            Category category = new Category();
+            category.setName(nama);
+            category.setPoint(point);
+            categories[j] = category;
+            try (Connection conn = libraryDatabase.connect()) {
+                category.insertIntoDatabase(conn);
+                System.out.println("Kategori " + category.getName() + " dengan " + category.getPoint()
+                        + " point berhasil ditambahkan");
+                j++;
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
         } else {
             System.out.println("Kategori " + nama + " sudah pernah ditambahkan");
         }
@@ -212,6 +220,7 @@ public class Library {
                                 if (checkBookLoan(members[indeks].getBookLoans(), judul, penulis) == null) {
                                     members[indeks].pinjam(book, date);
                                     books[indeksBuku].setStok(stok - 1);
+                                    System.out.println(members[indeks].getName() + " berhasil meminjam buku " + judul);
                                 } else {
                                     System.out.println("Buku " + judul + " oleh " + penulis + " sedang dipinjam");
                                 }
@@ -228,10 +237,16 @@ public class Library {
                     members[indeks].pinjam(book, date);
                     books[indeksBuku].setStok(stok - 1);
 
-                    // Update the member and book in the database
                     try (Connection conn = libraryDatabase.connect()) {
                         members[indeks].updateInDatabase(conn);
                         books[indeksBuku].updateInDatabase(conn);
+                        BookLoan bookLoan = BookLoan.selectFromDatabase(conn, id, judul);
+                        if (bookLoan == null) {
+                            bookLoan = new BookLoan(members[indeks], books[indeksBuku], date);
+                            bookLoan.insertIntoDatabase(conn);
+                        } else {
+                            System.out.println("Buku " + judul + " oleh " + penulis + " sedang dipinjam");
+                        }
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
                     }
@@ -294,6 +309,13 @@ public class Library {
             }
             try (Connection conn = libraryDatabase.connect()) {
                 members[indeks].updateInDatabase(conn);
+                BookLoan bookLoan = BookLoan.selectFromDatabase(conn, id, judul);
+                if (bookLoan != null) {
+                    bookLoan.returnBook(date);
+                    bookLoan.updateInDatabase(conn);
+                } else {
+                    System.out.println("Buku " + judul + " oleh " + penulis + " tidak sedang dipinjam");
+                }
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -367,7 +389,7 @@ public class Library {
     public void menu() throws ParseException {
         int command = 0;
         boolean hasChosenExit = false;
-        System.out.println("Selamat Datang di Sistem Perpustakaan SistakaNG!");
+        System.out.println("Selamat Datang di Sistem Perpustakaan TelkomNG!");
         while (!hasChosenExit) {
             System.out.println("================ Menu Utama ================\n");
             System.out.println("1. Tambah Anggota");
@@ -400,18 +422,6 @@ public class Library {
                 printTopThreeMembers();
             } else if (command == 99) {
                 System.out.println("Terima kasih telah menggunakan TelkomNG!");
-                try (Connection conn = libraryDatabase.connect();
-                        Statement stmt = conn.createStatement()) {
-                    String sqlMember = "CREATE TABLE IF NOT EXISTS Member (\n"
-                            + " id text PRIMARY KEY,\n"
-                            + " name text NOT NULL,\n"
-                            + " fine integer NOT NULL,\n"
-                            + " point integer NOT NULL\n"
-                            + ");";
-                    stmt.execute(sqlMember);
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
-                }
                 hasChosenExit = true;
             } else {
                 System.out.println("Menu tidak dikenal!");
