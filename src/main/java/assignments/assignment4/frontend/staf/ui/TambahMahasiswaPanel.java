@@ -1,13 +1,23 @@
 package assignments.assignment4.frontend.staf.ui;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import assignments.assignment4.LibraryDatabase;
 import assignments.assignment4.backend.SistakaNG;
 import assignments.assignment4.backend.pengguna.Mahasiswa;
 import assignments.assignment4.frontend.HomeGUI;
 import assignments.assignment4.frontend.SistakaPanel;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 
 // Kelas untuk panel tambah mahasiswa
 public class TambahMahasiswaPanel extends SistakaPanel {
@@ -30,7 +40,7 @@ public class TambahMahasiswaPanel extends SistakaPanel {
         JTextField angkatanTextField = new JTextField();
 
         // Menyusun drop down dari program studi
-        String[] programStudi = {"SIK", "SSI", "MIK", "MTI", "DIK"};
+        String[] programStudi = { "SIK", "SSI", "MIK", "MTI", "DIK" };
         JComboBox<String> programStudiDropDown = new JComboBox<>(programStudi);
 
         JButton tambahButton = new JButton(main.mainButtonHTML("Tambah"));
@@ -58,7 +68,7 @@ public class TambahMahasiswaPanel extends SistakaPanel {
 
         // Action listener untuk tombol tambah ketika ditekan
         tambahButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 System.out.println("MENAMBAHKAN ANGGOTA MAHASISWA"); // TESTING
 
                 // Mengambil masukan pengguna
@@ -71,15 +81,17 @@ public class TambahMahasiswaPanel extends SistakaPanel {
                 Mahasiswa mahasiswaBaru = SistakaNG.addMahasiswa(nama, tanggalLahir, programStudi, angkatan);
                 // Return null saat ada input yang salah
                 if (mahasiswaBaru == null) {
+                    LibraryDatabase db = new LibraryDatabase();
+                    db.addStudent(mahasiswaBaru);
                     JOptionPane.showMessageDialog(frame,
-                        "Tidak dapat menambahkan mahasiswa silahkan periksa kembali input anda!",
+                            "Tidak dapat menambahkan mahasiswa silahkan periksa kembali input anda!",
                             "Warning",
-                    JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.WARNING_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(frame,
-                        "Berhasil menambahkan mahasiswa dengan id " + mahasiswaBaru.getId() + "!",
-                        "Success!",
-                    JOptionPane.INFORMATION_MESSAGE);
+                            "Berhasil menambahkan mahasiswa dengan id " + mahasiswaBaru.getId() + "!",
+                            "Success!",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
                 // Example : SIK211305029Q
             }
@@ -87,7 +99,7 @@ public class TambahMahasiswaPanel extends SistakaPanel {
 
         // Action listener untuk tombol kembali ketika ditekan
         kembaliButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 main.setPanel("staf");
             }
         });

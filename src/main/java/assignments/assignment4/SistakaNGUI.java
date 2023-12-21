@@ -1,9 +1,10 @@
 package assignments.assignment4;
 
-import assignments.assignment4.backend.SistakaNG;
-import assignments.assignment4.frontend.*;
+import javax.swing.JFrame;
 
-import javax.swing.*;
+import assignments.assignment4.backend.SistakaNG;
+import assignments.assignment4.frontend.HomeGUI;
+import assignments.assignment4.frontend.WelcomePanel;
 
 // Kelas utama program berjalan
 public class SistakaNGUI {
@@ -13,6 +14,9 @@ public class SistakaNGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Mini Tel - U Lib");
         SistakaNG.registerStaf();
+
+        LibraryDatabase db = new LibraryDatabase();
+        db.createNewTables();
 
         // Memanggil welcome panel dan memulai GUI
         HomeGUI homepage = new HomeGUI(frame);

@@ -46,4 +46,16 @@ public class Mahasiswa extends Anggota {
             return String.format("%s berhasil meminjam Buku %s!", getNama(), buku.getJudul());
         }
     };
+
+    public String getProgramStudi() {
+        return programStudi;
+    }
+
+    public String getTanggalLahir() {
+        return tanggalLahir;
+    }
+
+    public String getAngkatan() {
+        return angkatan;
+    }
 }

@@ -1,14 +1,26 @@
 package assignments.assignment4.frontend.staf.ui;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import assignments.assignment4.LibraryDatabase;
 import assignments.assignment4.backend.SistakaNG;
+import assignments.assignment4.backend.buku.Buku;
 import assignments.assignment4.backend.buku.Kategori;
 import assignments.assignment4.frontend.HomeGUI;
 import assignments.assignment4.frontend.SistakaPanel;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
 
 // Kelas untuk menyusun panel tambah buku
 public class TambahBukuPanel extends SistakaPanel {
@@ -34,7 +46,7 @@ public class TambahBukuPanel extends SistakaPanel {
         JTextField penulisTextField = new JTextField();
         JTextField penerbitTextField = new JTextField();
         JTextField stokTextField = new JTextField();
-    
+
         JButton tambahButton = new JButton(main.mainButtonHTML("Tambah"));
         JButton kembaliButton = new JButton(main.kembaliButtonHTML("Kembali"));
 
@@ -61,7 +73,7 @@ public class TambahBukuPanel extends SistakaPanel {
 
         // Action listener untuk tombol tambah ketika ditekan
         tambahButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
 
                 // Mengambil data
                 String judul = judulTextField.getText();
@@ -71,37 +83,45 @@ public class TambahBukuPanel extends SistakaPanel {
                 String stokString = stokTextField.getText();
 
                 // Handle saat ada input kosong
-                if (judul.equals("") || penulis.equals("") || penerbit.equals("") || kategori.equals("") || stokString.equals("")) {
+                if (judul.equals("") || penulis.equals("") || penerbit.equals("") || kategori.equals("")
+                        || stokString.equals("")) {
                     // Handle saat input ada kosong
                     JOptionPane.showMessageDialog(frame,
-                        "Tidak dapat menambahkan buku silahkan periksa kembali input anda!",
-                        "Warning",
-                    JOptionPane.WARNING_MESSAGE);
+                            "Tidak dapat menambahkan buku silahkan periksa kembali input anda!",
+                            "Warning",
+                            JOptionPane.WARNING_MESSAGE);
                 } else if (stokString.equals("0")) {
                     // Handle saat stok tidak lebih dari 0
                     JOptionPane.showMessageDialog(frame,
-                        "Stok harus lebih dari 0!",
-                        "Warning",
-                    JOptionPane.WARNING_MESSAGE);
+                            "Stok harus lebih dari 0!",
+                            "Warning",
+                            JOptionPane.WARNING_MESSAGE);
                 } else {
                     // Convert stok dari string ke integer
                     int stok = Integer.valueOf(stokString);
 
-                    // Saat buku tidak ada di dalam daftar buku yang pernah ditambahkan maka tambahkan buku tersebut
+                    // Saat buku tidak ada di dalam daftar buku yang pernah ditambahkan maka
+                    // tambahkan buku tersebut
                     if (SistakaNG.findBuku(judul, penulis) == null) {
-                        // Menambahkan buku 
+                        // Menambahkan buku
                         SistakaNG.addBuku(judul, penulis, penerbit, kategori, stok);
+                        String kategoriName = kategoriDropDown.getSelectedItem().toString();
+                        Kategori kategoriObject = SistakaNG.findKategori(kategoriName);
+                        Buku buku = new Buku(judul, penulis, penerbit, stok, kategoriObject);
+                        LibraryDatabase db = new LibraryDatabase();
+                        db.addBook(buku);
+
                         // Message
                         JOptionPane.showMessageDialog(frame,
-                            String.format("Buku %s oleh %s berhasil ditambahkan!", judul, penulis),
-                            "Success!",
-                        JOptionPane.INFORMATION_MESSAGE);
+                                String.format("Buku %s oleh %s berhasil ditambahkan!", judul, penulis),
+                                "Success!",
+                                JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         // Saat pernah ada maka kembalikan pesan
                         JOptionPane.showMessageDialog(frame,
-                            String.format("Buku %s oleh %s sudah pernah ditambahkan", judul, penulis),
-                            "Warning",
-                        JOptionPane.WARNING_MESSAGE);
+                                String.format("Buku %s oleh %s sudah pernah ditambahkan", judul, penulis),
+                                "Warning",
+                                JOptionPane.WARNING_MESSAGE);
                     }
                 }
 
@@ -110,16 +130,15 @@ public class TambahBukuPanel extends SistakaPanel {
 
         // Action listener untuk tombol kembali ketika ditekan
         kembaliButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 main.setPanel("staf");
             }
         });
     }
 
-
     @Override
     public void refresh() {
-        // Refresh combobox dan set isi default 
+        // Refresh combobox dan set isi default
         DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) kategoriDropDown.getModel();
         model.removeAllElements();
         ArrayList<Kategori> daftarKategori = SistakaNG.getDaftarKategori();

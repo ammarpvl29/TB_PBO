@@ -23,7 +23,8 @@ public class Buku {
     }
 
     public boolean equals(Buku otherBook) {
-        if(this.judul.equalsIgnoreCase(otherBook.getJudul()) && this.penulis.equalsIgnoreCase(otherBook.getPenulis())){
+        if (this.judul.equalsIgnoreCase(otherBook.getJudul())
+                && this.penulis.equalsIgnoreCase(otherBook.getPenulis())) {
             return true;
         }
         return false;
@@ -36,10 +37,10 @@ public class Buku {
 
     public String getData() {
         return String.format("Judul Buku: %s<br/>" +
-                        "Penulis Buku: %s<br/>" +
-                        "Penerbit Buku: %s<br/>" +
-                        "Kategori: %s<br/>" +
-                        "Point: %d",
+                "Penulis Buku: %s<br/>" +
+                "Penerbit Buku: %s<br/>" +
+                "Kategori: %s<br/>" +
+                "Point: %d",
                 judul, penulis, penerbit, kategori.getNama(), kategori.getPoin());
     }
 
@@ -69,6 +70,10 @@ public class Buku {
 
     public int getStok() {
         return stok;
+    }
+
+    public String getPenerbit() {
+        return penerbit;
     }
 
     public int getStokAwal() {

@@ -1,12 +1,22 @@
 package assignments.assignment4.frontend.staf.ui;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import assignments.assignment4.LibraryDatabase;
 import assignments.assignment4.backend.SistakaNG;
+import assignments.assignment4.backend.buku.Kategori;
 import assignments.assignment4.frontend.HomeGUI;
 import assignments.assignment4.frontend.SistakaPanel;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 
 // Kelas untuk panel tambah kategori
 public class TambahKategoriPanel extends SistakaPanel {
@@ -24,7 +34,7 @@ public class TambahKategoriPanel extends SistakaPanel {
 
         JTextField namaTextField = new JTextField();
         JTextField poinTextField = new JTextField();
-    
+
         JButton tambahButton = new JButton(main.mainButtonHTML("Tambah"));
         JButton kembaliButton = new JButton(main.kembaliButtonHTML("Kembali"));
 
@@ -47,7 +57,7 @@ public class TambahKategoriPanel extends SistakaPanel {
 
         // Action listener untuk tombol tambah ketika ditekan
         tambahButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 System.out.println("MENAMBAHKAN KATEGORI"); // TESTING
 
                 // Mengambil masukan pengguna
@@ -58,9 +68,9 @@ public class TambahKategoriPanel extends SistakaPanel {
                 if (nama.equals("") || poinText.equals("")) {
                     // Saat input ada yang kosong
                     JOptionPane.showMessageDialog(frame,
-                        "Tidak dapat menambahkan kategori silahkan periksa kembali input anda!",
-                        "Warning",
-                    JOptionPane.WARNING_MESSAGE);
+                            "Tidak dapat menambahkan kategori silahkan periksa kembali input anda!",
+                            "Warning",
+                            JOptionPane.WARNING_MESSAGE);
                 } else {
 
                     // Convert poin dari string ke integer
@@ -69,18 +79,20 @@ public class TambahKategoriPanel extends SistakaPanel {
                     if (SistakaNG.findKategori(nama) == null) {
                         // Saat kategori belum pernah dibuat maka tambahkan kategori baru
                         SistakaNG.addKategori(nama, poin);
-
+                        Kategori kategori = new Kategori(nama, poin);
+                        LibraryDatabase db = new LibraryDatabase();
+                        db.addCategory(kategori);
                         // Message Success
                         JOptionPane.showMessageDialog(frame,
-                            String.format("Kategori %s dengan poin %d berhasil ditambahkan", nama, poin),
-                            "Success!",
-                        JOptionPane.INFORMATION_MESSAGE);
+                                String.format("Kategori %s dengan poin %d berhasil ditambahkan", nama, poin),
+                                "Success!",
+                                JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         // Saat kategori sudah pernah dibuat
                         JOptionPane.showMessageDialog(frame,
-                            String.format("Kategori %s sudah pernah ditambahkan!", nama),
-                            "Warning",
-                        JOptionPane.WARNING_MESSAGE);
+                                String.format("Kategori %s sudah pernah ditambahkan!", nama),
+                                "Warning",
+                                JOptionPane.WARNING_MESSAGE);
                     }
 
                 }
@@ -89,7 +101,7 @@ public class TambahKategoriPanel extends SistakaPanel {
 
         // Action listener untuk tombol kembali ketika ditekan
         kembaliButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 main.setPanel("staf");
             }
         });
