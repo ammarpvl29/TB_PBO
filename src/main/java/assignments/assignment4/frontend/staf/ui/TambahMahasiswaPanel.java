@@ -81,18 +81,20 @@ public class TambahMahasiswaPanel extends SistakaPanel {
                 Mahasiswa mahasiswaBaru = SistakaNG.addMahasiswa(nama, tanggalLahir, programStudi, angkatan);
                 // Return null saat ada input yang salah
                 if (mahasiswaBaru == null) {
-                    LibraryDatabase db = new LibraryDatabase();
-                    db.addStudent(mahasiswaBaru);
                     JOptionPane.showMessageDialog(frame,
                             "Tidak dapat menambahkan mahasiswa silahkan periksa kembali input anda!",
                             "Warning",
                             JOptionPane.WARNING_MESSAGE);
                 } else {
+                    LibraryDatabase db = new LibraryDatabase();
+                    db.addMember(mahasiswaBaru);
+                    db.addStudent(mahasiswaBaru);
                     JOptionPane.showMessageDialog(frame,
                             "Berhasil menambahkan mahasiswa dengan id " + mahasiswaBaru.getId() + "!",
                             "Success!",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
+
                 // Example : SIK211305029Q
             }
         });

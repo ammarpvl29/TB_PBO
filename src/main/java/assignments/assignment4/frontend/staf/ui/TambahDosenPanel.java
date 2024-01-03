@@ -1,5 +1,6 @@
 package assignments.assignment4.frontend.staf.ui;
 
+import assignments.assignment4.LibraryDatabase;
 import assignments.assignment4.backend.SistakaNG;
 import assignments.assignment4.backend.pengguna.Dosen;
 import assignments.assignment4.frontend.HomeGUI;
@@ -23,7 +24,7 @@ public class TambahDosenPanel extends SistakaPanel {
         JLabel namaLabel = new JLabel("Nama");
 
         JTextField namaTextField = new JTextField();
-    
+
         JButton tambahButton = new JButton(main.mainButtonHTML("Tambah"));
         JButton kembaliButton = new JButton(main.kembaliButtonHTML("Kembali"));
 
@@ -45,26 +46,37 @@ public class TambahDosenPanel extends SistakaPanel {
 
         // Action listener untuk tombol tambah ketika ditekan
         tambahButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 System.out.println("MENAMBAHKAN ANGGOTA DOSEN"); // TESTING
 
                 // Mengambil masukan pengguna
                 String nama = namaTextField.getText();
-            
+
                 // Warning saat isian kosong
                 if (nama.equals("")) {
                     JOptionPane.showMessageDialog(frame,
-                        "Tidak dapat menambahkan dosen silahkan periksa kembali input anda!",
+                            "Tidak dapat menambahkan dosen silahkan periksa kembali input anda!",
                             "Warning",
-                    JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.WARNING_MESSAGE);
                 } else {
                     // Construct
                     Dosen dosenBaru = SistakaNG.addDosen(nama);
-                    // Message Success
-                    JOptionPane.showMessageDialog(frame,
-                        "Berhasil menambahkan dosen dengan id " + dosenBaru.getId() + "!",
-                        "Success!",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    if (dosenBaru != null) {
+                        LibraryDatabase db = new LibraryDatabase();
+                        db.addMember(dosenBaru);
+                        db.addLecturer(dosenBaru);
+                        // Message Success
+                        JOptionPane.showMessageDialog(frame,
+                                "Berhasil menambahkan dosen dengan id " + dosenBaru.getId() + "!",
+                                "Success!",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(frame,
+                                "Tidak dapat menambahkan dosen silahkan periksa kembali input anda!",
+                                "Warning",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
+
                 }
                 // Example : DOSEN-1
             }
@@ -72,7 +84,7 @@ public class TambahDosenPanel extends SistakaPanel {
 
         // Action listener untuk tombol kembali ketika ditekan
         kembaliButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 main.setPanel("staf");
             }
         });

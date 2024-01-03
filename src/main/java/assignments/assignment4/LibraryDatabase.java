@@ -9,6 +9,8 @@ import java.sql.Statement;
 
 import assignments.assignment4.backend.buku.Buku;
 import assignments.assignment4.backend.buku.Kategori;
+import assignments.assignment4.backend.pengguna.Anggota;
+import assignments.assignment4.backend.pengguna.Dosen;
 import assignments.assignment4.backend.pengguna.Mahasiswa;
 
 public class LibraryDatabase {
@@ -55,6 +57,20 @@ public class LibraryDatabase {
         }
     }
 
+    public void addMember(Anggota anggota) {
+        String sql = "INSERT INTO Member(id, name, type) VALUES(?,?,?)";
+
+        try (Connection conn = this.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, anggota.getId());
+            pstmt.setString(2, anggota.getNama());
+            pstmt.setString(3, anggota instanceof Dosen ? "Dosen" : "Mahasiswa");
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage() + " on line " + e.getStackTrace()[0].getLineNumber());
+        }
+    }
+
     public void addStudent(Mahasiswa mahasiswa) {
         String sql = "INSERT INTO Student(id, name, birthdate, studyProgram, year) VALUES(?,?,?,?,?)";
 
@@ -71,6 +87,19 @@ public class LibraryDatabase {
         }
     }
 
+    public void addLecturer(Dosen dosen) {
+        String sql = "INSERT INTO Lecturer(id, name) VALUES(?,?)";
+
+        try (Connection conn = this.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, dosen.getId());
+            pstmt.setString(2, dosen.getNama());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage() + " on line " + e.getStackTrace()[0].getLineNumber());
+        }
+    }
+
     public ResultSet executeQuery(String sql) {
         try (Connection conn = this.connect();
                 Statement stmt = conn.createStatement()) {
@@ -82,6 +111,7 @@ public class LibraryDatabase {
     }
 
     public void createNewTables() {
+        String dropSqlMember = "DROP TABLE IF EXISTS Member";
         String dropSqlStudent = "DROP TABLE IF EXISTS Student";
         String dropSqlLecturer = "DROP TABLE IF EXISTS Lecturer";
         String dropSqlBook = "DROP TABLE IF EXISTS Book";
@@ -89,6 +119,13 @@ public class LibraryDatabase {
         String dropSqlCategory = "DROP TABLE IF EXISTS Category";
 
         // SQL statement for creating new tables
+
+        String sqlMember = "CREATE TABLE IF NOT EXISTS Member (\n"
+                + " id text PRIMARY KEY,\n"
+                + " name text NOT NULL,\n"
+                + " type text NOT NULL\n" // This will indicate whether the member is a 'Student' or 'Lecturer'
+                + ");";
+
         String sqlStudent = "CREATE TABLE IF NOT EXISTS Student (\n"
                 + " id text PRIMARY KEY,\n"
                 + " name text NOT NULL,\n"
@@ -99,7 +136,7 @@ public class LibraryDatabase {
 
         String sqlLecturer = "CREATE TABLE IF NOT EXISTS Lecturer (\n"
                 + " id text PRIMARY KEY,\n"
-                + " name text NOT NULL,\n"
+                + " name text NOT NULL\n"
                 + ");";
         ;
 
@@ -127,20 +164,23 @@ public class LibraryDatabase {
 
         try (Connection conn = this.connect();
                 Statement stmt = conn.createStatement()) {
+            stmt.execute(dropSqlMember);
             stmt.execute(dropSqlStudent);
             stmt.execute(dropSqlLecturer);
             stmt.execute(dropSqlBook);
             stmt.execute(dropSqlBookLoan);
             stmt.execute(dropSqlCategory);
             // create new tables
+            stmt.execute(sqlMember);
             stmt.execute(sqlStudent);
             stmt.execute(sqlLecturer);
             stmt.execute(sqlBook);
             stmt.execute(sqlBookLoan);
             stmt.execute(sqlCategory);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage() + " on line " + e.getStackTrace()[0].getLineNumber());
         }
+
     }
 
 }
